@@ -1,0 +1,53 @@
+<!DOCTYPE html> 
+  <html lang="en">
+    <head>
+      <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+
+      <title>Team Research Decode Tool</title>
+      <script src="scripts/decode.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+<script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+    </head>
+
+
+    <body>
+      <div class="container">
+        <div class="jumbotron">
+          <div class="container">
+            <h1>Team Research Inc</h1>
+            <p>Decode Tool: Please Enter Part Numbers</p> 
+            <textarea class="form-control" id="partNumListarea" rows="8"></textarea><br>
+            <button type="button" class="btn btn-primary" onclick="decode()">Submit</button>
+          </div>
+        </div>
+      
+      </div>
+       <table class="table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Appli.</th>
+            <th>Family</th>
+            <th>Density</th>
+            <th>Mode Grp</th>
+            <th>Part Number</th>
+            <th>Tech</th>
+            <th>IC/Model/VGA</th>
+            <th>Voltage</th>
+            <th>IC Config</th>
+            <th>Total Capacity</th>
+            <th>Module Type</th>
+            <th>Speed</th>
+          </tr>
+        </thead>
+        <tbody id="myTableBody">
+    
+        </tbody>
+      </table>
+    </body>
+</html>
+
