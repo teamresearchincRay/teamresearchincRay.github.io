@@ -12,6 +12,8 @@ var voltage="N/A";
 var speed;
 var ICConfig;
 var moduleType="N/A";
+var ECC;
+var package;
 function decode (){
 	$( "#myTableBody" ).empty();
 	var line;
@@ -22,7 +24,13 @@ function decode (){
 		console.log(line[0]);
 		
 		density = line[2];
-		console.log(line[2]);
+		console.log("density" + line[2].slice(-1));
+		if (line[2].slice(-1) == "M" ||line[2].slice(-1) == "MB" ){
+			density = (density.slice(0,-1))/1024;
+			console.log("density" + density);
+		}else{
+			density = (density.slice(0,-1));
+		}
 		partNumber = line[4];
 		//console.log(partNumber[1]);
 
@@ -41,42 +49,62 @@ function decode (){
 		console.log("type is " + type);
 		//==================================================Module============================
 		if(type == "Module"){
-
 			if(line[3] == "DDR3"){
 				voltage="N/A";
 				get_speedDDR3(partNumber[14],partNumber[15]);
 			}else if (line[3]=="DDR4"){
 				voltage="1.2V";
 				get_speedDDR4(partNumber[14],partNumber[15]);
+			}else if(line[3] == "DDR2"){
+				voltage ="N/A";
+				get_speedDDR2(partNumber[14],partNumber[15]);
 			}
 			get_depth(partNumber[4],partNumber[5]);
 
 			get_width(partNumber[11]);
 			get_module_type(partNumber[6]);
+			checkECC(partNumber[7]);
+			check_package(partNumber[9]);
+			if(ECC == "ECC"){
+				moduleType = "ECC "+moduleType;
+			}
 
-			height = density.slice(0,-1) / width;
+			height = density / width;
+
 			console.log("height " + height);
+			if(height >=1 ){
 			ICConfig = height + "G*"+width;
+			}else{
+			ICConfig = height*1024 + "M*"+width;
+			}
 			rank = depth/height;
 			console.log("rank " + rank);
-			ICQTY = 64/width*rank;
+			ICQTY = (64/width*rank)/package;
+			
 			console.log("ICQTY" + ICQTY);
-			totalCapacity = ICQTY*density.slice(0,-1)/8;
+			totalCapacity = ICQTY*density/8;
+			if (package == 2 ){
+
+				ICQTY = ICQTY + " DDP";
+			}else if (package == 4){
+				ICQTY = ICQTY + " QDP";
+			}
 			$("#myTableBody").append('<tr><td>'+(i+1)+'</td><td>'
 			+line[0]+'</td><td>'
 			+line[1]+'</td><td>'
 			+line[2]+'</td><td>'
 			+line[3]+'</td><td>'
 			+line[4]+'</td><td>'
-			+line[5]+'</td><td>'
 			+type+'</td><td>'
 			+voltage+'</td><td>'
 			+ICConfig+'</td><td>'
+			+rank+'</td><td>'
+			+ICQTY+'</td><td>'
 			+totalCapacity+"G"+'</td><td>'
 			+moduleType+'</td><td>'
 			+speed+'</td></tr>');
 
-		} else if (type == "IC"){
+		} else if (type == "IC"){//======================IC==================
 			//check voltage
 			get_voltage(partNumber[3]);
 			//check depth
@@ -89,14 +117,20 @@ function decode (){
 				get_speedDDR3(partNumber[12],partNumber[13]);
 			}else if (line[3]=="DDR4"){
 				get_speedDDR4(partNumber[12],partNumber[13]);
+			}else if(line[3] == "DDR2"){
+				get_speedDDR2(partNumber[12],partNumber[13]);
 			}
 
 
 			//get_module_type(partNumber[6]);
 
-			height = density.slice(0,-1) / width;
+			height = density / width;
 			console.log("height " + height);
-			ICConfig = height + "G*"+width;
+			if(height >=1 ){
+				ICConfig = height + "G*"+width;
+			}else{
+				ICConfig = height*1024 + "M*"+width;
+			}
 			rank = depth/height;
 			ICQTY = 64/width*rank;
 			$("#myTableBody").append('<tr><td>'+(i+1)+'</td><td>'
@@ -105,10 +139,11 @@ function decode (){
 			+line[2]+'</td><td>'
 			+line[3]+'</td><td>'
 			+line[4]+'</td><td>'
-			+line[5]+'</td><td>'
 			+type+'</td><td>'
 			+voltage+'</td><td>'
 			+ICConfig+'</td><td>'
+			+"N/A"+'</td><td>'
+			+"N/A"+'</td><td>'
 			+"N/A"+'</td><td>'
 			+"N/A"+'</td><td>'
 			+speed+'</td></tr>');
@@ -135,6 +170,10 @@ function get_voltage(v){
 				break;
 				case "K":
 					voltage="1.25V";
+				case "S":
+					voltage="1.8V";
+				case "G":
+					voltage="1.55V";
 				break;
 			}
 			console.log("voltage is " + voltage);
@@ -175,7 +214,31 @@ function get_width(w){
 	}
 		console.log("width is " + width);	
 }
+function get_speedDDR2(s1,s2){
 
+			if (s1 =="G" && s2=="7"){
+				speed = 1066;
+			}else if (s1 =="G" && s2=="6"){
+				speed = 1066;
+			}else if (s1 =="S" && s2=="6"){
+				speed = 800;
+			}else if (s1 =="S" && s2=="5"){
+				speed = 800;
+			}else if (s1 =="Y" && s2=="5"){
+				speed = 667;
+			}else if (s1 =="Y" && s2=="4"){
+				speed = 667;
+			}else if (s1 =="C" && s2=="4"){
+				speed = 533;
+			}else if (s1 =="E" && s2=="3"){
+				speed = 400;
+			}else{
+				speed = "UnkownDDR3";
+			}
+
+			
+			console.log("speed is " +s1 + s1 + speed);
+}
 function get_speedDDR3(s1,s2){
 
 			if (s1 =="T" && s2=="E"){
@@ -252,6 +315,24 @@ function get_module_type(m){
 	}
 
 }
-function appendTable(){
+function checkECC(e){
+		if(e == 6 || e== 1 || e ==2){
+			ECC = "Non-ECC";
+		}else if (e == 7 || e== 8 || e ==9 ){
+			ECC ="ECC";
+		}else {
+			ECC = "Unkown"
+		}
+}
+function check_package(p){
+	if(p == "F" || p == "J"){
+		package = 1;
+	}else if (p == "M" ||p == "P" ||p=="L"){
+		package =2;
+	}else if (p == "H" ){
+		package =4;
+	}else {
+		package ="Unkown";
+	}
 
 }
