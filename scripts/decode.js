@@ -41,6 +41,7 @@ function decode (){
 		partNumber = line[4];
 		itemQTY = line[6];
 		//console.log(partNumber[1]);
+		//==================Check Total QTY=====================================
 		for(var a = 0; a<data.length;a++ ){
 
 			if(data[a].PM == line[4]){
@@ -54,7 +55,7 @@ function decode (){
 		if (exist != true){
 			data.push({"PM":line[4],"QTY":parseInt(line[6])});
 		}
-		
+		//==================Check Total QTY=====================================
 		//check type
 		switch (partNumber[1]){
 			case "M":
@@ -125,6 +126,7 @@ function decode (){
 			+moduleType+'</td><td>'
 			+speed+'</td></tr>');
 
+
 		} else if (type == "IC"){//======================IC==================
 			//check voltage
 			get_voltage(partNumber[3]);
@@ -170,7 +172,7 @@ function decode (){
 			+speed+'</td></tr>');
 
 
-		}//IC
+		}//ICccc
 	
 		
 	}//for (var i = 0; i<lines.length; i++)
