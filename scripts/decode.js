@@ -1,4 +1,5 @@
 var partNumber;
+var itemQTY;
 var density;
 var width;
 var height;
@@ -14,8 +15,14 @@ var ICConfig;
 var moduleType="N/A";
 var ECC;
 var package;
+
 function decode (){
+	var data=[];
+	document.getElementById("mainTable").style.visibility = "visible";
+	document.getElementById("subTable").style.visibility = "visible";
 	$( "#myTableBody" ).empty();
+	$( "#mySubTableBody" ).empty();
+	var exist;
 	var line;
 	var lines = $('#partNumListarea').val().replace(/\n/g,"###").replace(/\s/g,"@@").split('###');
 	console.log(lines);
@@ -32,8 +39,22 @@ function decode (){
 			density = (density.slice(0,-1));
 		}
 		partNumber = line[4];
+		itemQTY = line[6];
 		//console.log(partNumber[1]);
+		for(var a = 0; a<data.length;a++ ){
 
+			if(data[a].PM == line[4]){
+				data[a].QTY += parseInt(line[6]);
+				exist = true;
+			}else{
+				exist = false;
+			}
+			console.log("data" + data[a].PM+" "+ data[a].QTY );
+		}
+		if (exist != true){
+			data.push({"PM":line[4],"QTY":parseInt(line[6])});
+		}
+		
 		//check type
 		switch (partNumber[1]){
 			case "M":
@@ -153,6 +174,11 @@ function decode (){
 	
 		
 	}//for (var i = 0; i<lines.length; i++)
+	for(var i = 0; i<data.length;i++){
+		$("#mySubTableBody").append('<tr><td>'+data[i].PM+'</td><td>'
+			+data[i].QTY+'</td>');
+	}
+	
 }
 
 function get_voltage(v){
@@ -334,5 +360,12 @@ function check_package(p){
 	}else {
 		package ="Unkown";
 	}
+
+}
+
+function displayQTY(){
+
+
+	
 
 }
