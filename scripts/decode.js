@@ -15,6 +15,7 @@ var ICConfig;
 var moduleType="N/A";
 var ECC;
 var package;
+var modeGrp;
 
 function decode (){
 	var data=[];
@@ -30,30 +31,30 @@ function decode (){
 		line = lines[i].split('@@');
 		console.log(line[0]);
 		
-		density = line[2];
+		/*density = line[2];
 		console.log("density" + line[2].slice(-1));
 		if (line[2].slice(-1) == "M" ||line[2].slice(-1) == "MB" ){
 			density = (density.slice(0,-1))/1024;
 			console.log("density" + density);
 		}else{
 			density = (density.slice(0,-1));
-		}
-		partNumber = line[4];
-		itemQTY = line[6];
+		}*/
+
+		partNumber = line[0];
+		itemQTY = line[1];
 		//console.log(partNumber[1]);
 		//==================Check Total QTY=====================================
+		exist = false;
 		for(var a = 0; a<data.length;a++ ){
-
-			if(data[a].PM == line[4]){
-				data[a].QTY += parseInt(line[6]);
+		
+			if(data[a].PM.toString() == line[0].toString()){
+				data[a].QTY += parseInt(line[1]);
 				exist = true;
-			}else{
-				exist = false;
 			}
-			console.log("data" + data[a].PM+" "+ data[a].QTY );
+			
 		}
 		if (exist != true){
-			data.push({"PM":line[4],"QTY":parseInt(line[6])});
+			data.push({"PM":line[0],"QTY":parseInt(line[1])});
 		}
 		//==================Check Total QTY=====================================
 		//check type
@@ -69,16 +70,22 @@ function decode (){
 
 		}
 		console.log("type is " + type);
+		
+
 		//==================================================Module============================
 		if(type == "Module"){
-			if(line[3] == "DDR3"){
+			get_density_module(partNumber[3]);
+			if(partNumber[2] == "T"){//DDR3
 				voltage="N/A";
+				modeGrp="DDR3";
 				get_speedDDR3(partNumber[14],partNumber[15]);
-			}else if (line[3]=="DDR4"){
+			}else if (partNumber[2] == "A"){//DDR4
 				voltage="1.2V";
+				modeGrp="DDR4";
 				get_speedDDR4(partNumber[14],partNumber[15]);
-			}else if(line[3] == "DDR2"){
+			}else if(partNumber[2] == "P"){
 				voltage ="N/A";
+				modeGrp="DDR2";
 				get_speedDDR2(partNumber[14],partNumber[15]);
 			}
 			get_depth(partNumber[4],partNumber[5]);
@@ -101,8 +108,11 @@ function decode (){
 			}
 			rank = depth/height;
 			console.log("rank " + rank);
-			ICQTY = (64/width*rank)/package;
-			
+			if(ECC == "ECC"){
+				ICQTY = (64/width*rank)/package+rank+ ((rank*8)/width);
+			}else{
+				ICQTY = (64/width*rank)/package;
+			}
 			console.log("ICQTY" + ICQTY);
 			totalCapacity = ICQTY*density/8;
 			if (package == 2 ){
@@ -112,11 +122,10 @@ function decode (){
 				ICQTY = ICQTY + " QDP";
 			}
 			$("#myTableBody").append('<tr><td>'+(i+1)+'</td><td>'
+			+modeGrp+'</td><td>'
 			+line[0]+'</td><td>'
-			+line[1]+'</td><td>'
-			+line[2]+'</td><td>'
-			+line[3]+'</td><td>'
-			+line[4]+'</td><td>'
+			+density+' G</td><td>'//Density
+			+line[1]+'</td><td>'//QTY
 			+type+'</td><td>'
 			+voltage+'</td><td>'
 			+ICConfig+'</td><td>'
@@ -128,6 +137,8 @@ function decode (){
 
 
 		} else if (type == "IC"){//======================IC==================
+			//get Density.
+			get_density_IC(partNumber[4],partNumber[5]);
 			//check voltage
 			get_voltage(partNumber[3]);
 			//check depth
@@ -136,11 +147,14 @@ function decode (){
 			//check width
 			get_width(partNumber[6]);
 			//check speed 
-			if(line[3] == "DDR3"){
+			if(partNumber[2] == "T"){
 				get_speedDDR3(partNumber[12],partNumber[13]);
-			}else if (line[3]=="DDR4"){
+				modeGrp="DDR3";
+			}else if (partNumber[2]=="A"){
+				modeGrp="DDR4";
 				get_speedDDR4(partNumber[12],partNumber[13]);
-			}else if(line[3] == "DDR2"){
+			}else if(partNumber[2]== "P"){
+				modeGrp="DDR2";
 				get_speedDDR2(partNumber[12],partNumber[13]);
 			}
 
@@ -157,11 +171,10 @@ function decode (){
 			rank = depth/height;
 			ICQTY = 64/width*rank;
 			$("#myTableBody").append('<tr><td>'+(i+1)+'</td><td>'
-			+line[0]+'</td><td>'
-			+line[1]+'</td><td>'
-			+line[2]+'</td><td>'
-			+line[3]+'</td><td>'
-			+line[4]+'</td><td>'
+			+modeGrp+'</td><td>'
+			+line[0]+'</td><td>'//part number
+			+density+' G</td><td>'//density
+			+line[1]+'</td><td>'//QTY
 			+type+'</td><td>'
 			+voltage+'</td><td>'
 			+ICConfig+'</td><td>'
@@ -179,8 +192,69 @@ function decode (){
 	for(var i = 0; i<data.length;i++){
 		$("#mySubTableBody").append('<tr><td>'+data[i].PM+'</td><td>'
 			+data[i].QTY+'</td>');
+		console.log("data" + data[i].PM+" "+ data[i].QTY );
 	}
 	
+}
+function get_density_module(d1){
+	if (d1 == "2"){
+
+		density = 0.25;
+
+	}else if (d1 == "5" ){
+
+		density = 0.5;
+
+	}else if (d1 == "1" ){
+		density = 1;
+		
+	}else if (d1 == "3"){
+		density = 2;
+	}else if (d1 == "4"){
+		density = 4;
+	}else if (d1 == "8" ){
+		density = 8;
+	}else if (d1 == "A"){
+		density = 16;
+	}else if (d1 == "B"){
+		density = 32;
+	}
+			
+}
+function get_density_IC(d1, d2){
+	if (d1 == "2" && d2=="5"){
+
+		density = 0.25;
+
+	}else if (d1 == "5" && d2=="1"){
+
+		density = 0.5;
+
+	}else if (d1 == "1" && d2=="G"){
+		density = 1;
+		
+	}else if (d1 == "2" && d2=="G"){
+		density = 2;
+	}else if (d1 == "4" && d2=="G"){
+		density = 4;
+	}else if (d1 == "8" && d2=="G"){
+		density = 8;
+	}else if (d1 == "A" && d2=="G"){
+		density = 16;
+	}else if (d1 == "B" && d2=="G"){
+		density = 32;
+	}else if (d1 == "A" && d2=="H"){
+		density = 12;	
+	}else if (d1 == "B" && d2=="P"){
+		density = 16;
+	}else if (d1 == "B" && d2=="K"){
+		density = 16;
+	}else if (d1 == "C" && d2=="P"){
+		density = 32;
+	}else if (d1 == "D" && d2=="A"){
+		density = 24;
+	}
+			
 }
 
 function get_voltage(v){
@@ -198,8 +272,10 @@ function get_voltage(v){
 				break;
 				case "K":
 					voltage="1.25V";
+				break;
 				case "S":
-					voltage="1.8V";
+					voltage="1.8V"; 
+				break;
 				case "G":
 					voltage="1.55V";
 				break;
