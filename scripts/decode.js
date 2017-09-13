@@ -65,6 +65,9 @@ function decode (){
 			case "5":
 				type="IC";
 			break;
+			case "9":
+				type="LPDDR4";
+			break;
 			default:
 				type="Unkown";
 
@@ -109,12 +112,16 @@ function decode (){
 			rank = depth/height;
 			console.log("rank " + rank);
 			if(ECC == "ECC"){
-				ICQTY = (64/width*rank)/package+rank+ ((rank*8)/width);
+				ICQTY = (64/width*rank)/package+ ((rank*8)/width);
 			}else{
 				ICQTY = (64/width*rank)/package;
 			}
 			console.log("ICQTY" + ICQTY);
-			totalCapacity = ICQTY*density/8;
+			if(ECC =="ECC"){
+				totalCapacity = (ICQTY-((rank*8)/width))*density/8;
+			}else{
+				totalCapacity = ICQTY*density/8;
+			}
 			if (package == 2 ){
 
 				ICQTY = ICQTY + " DDP";
@@ -142,7 +149,7 @@ function decode (){
 			//check voltage
 			get_voltage(partNumber[3]);
 			//check depth
-			get_depth(partNumber[4],partNumber[5]);
+			//get_depth(partNumber[4],partNumber[5]);
 
 			//check width
 			get_width(partNumber[6]);
@@ -168,8 +175,7 @@ function decode (){
 			}else{
 				ICConfig = height*1024 + "M*"+width;
 			}
-			rank = depth/height;
-			ICQTY = 64/width*rank;
+			
 			$("#myTableBody").append('<tr><td>'+(i+1)+'</td><td>'
 			+modeGrp+'</td><td>'
 			+line[0]+'</td><td>'//part number
@@ -185,7 +191,24 @@ function decode (){
 			+speed+'</td></tr>');
 
 
-		}//ICccc
+		}//ICcc
+		else if(type =="LPDDR4"){
+
+			get_density_IC(partNumber[7],partNumber[8]);
+			$("#myTableBody").append('<tr><td>'+(i+1)+'</td><td>'
+			+modeGrp+'</td><td>'
+			+line[0]+'</td><td>'//part number
+			+density+' G</td><td>'//density
+			+line[1]+'</td><td>'//QTY
+			+type+'</td><td>'
+			+voltage+'</td><td>'
+			+ICConfig+'</td><td>'
+			+"N/A"+'</td><td>'
+			+"N/A"+'</td><td>'
+			+"N/A"+'</td><td>'
+			+"N/A"+'</td><td>'
+			+speed+'</td></tr>');
+		}
 	
 		
 	}//for (var i = 0; i<lines.length; i++)
