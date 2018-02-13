@@ -240,13 +240,13 @@ function decode_RAM (){
 			+density+' G</td><td>'//Density
 			+line[1]+'</td><td>'//QTY
 			+type+'</td><td>'
-			+voltage+'</td><td>'
+			+speed+'</td><td>'
 			+ICConfig+'</td><td>'
 			+rank+'</td><td>'
 			+ICQTY+'</td><td>'
 			+totalCapacity+"G"+'</td><td>'
 			+moduleType+'</td><td>'
-			+speed+'</td></tr>');
+			+voltage+'</td></tr>');
 
 
 		} else if (type == "IC"){//======================IC==================
@@ -288,13 +288,13 @@ function decode_RAM (){
 			+density+' G</td><td>'//density
 			+line[1]+'</td><td>'//QTY
 			+type+'</td><td>'
-			+voltage+'</td><td>'
+			+speed+'</td><td>'
 			+ICConfig+'</td><td>'
 			+"N/A"+'</td><td>'
 			+"N/A"+'</td><td>'
 			+"N/A"+'</td><td>'
 			+"N/A"+'</td><td>'
-			+speed+'</td></tr>');
+			+voltage+'</td></tr>');
 
 
 		}//ICcc
@@ -307,13 +307,13 @@ function decode_RAM (){
 			+density+' G</td><td>'//density
 			+line[1]+'</td><td>'//QTY
 			+type+'</td><td>'
-			+voltage+'</td><td>'
+			+speed+'</td><td>'
 			+ICConfig+'</td><td>'
 			+"N/A"+'</td><td>'
 			+"N/A"+'</td><td>'
 			+"N/A"+'</td><td>'
 			+"N/A"+'</td><td>'
-			+speed+'</td></tr>');
+			+voltage+'</td></tr>');
 		}
 	
 		
