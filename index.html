@@ -7,6 +7,7 @@
 
       <title>Team Research Decode Tool</title>
       <script src="scripts/decode.js"></script>
+      <script src="scripts/hynix_data.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
 <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
@@ -22,6 +23,15 @@
             <p>Decode Tool powered by Ray Gu</p> 
             <p>Please Enter Part Numbers and QTY (HY and H9 is not supported)</p>
             <p style="color:red;">Note: This tool is only for a reference. The developer does not take any responsibility if it causes any profit lost. Please read and agree this note before using it.</p> 
+            <div id ="DDR">
+              <label class="radio-inline">
+                <input type="radio" name="typeGroup" id="inlineRadio1" value="RAM" onclick="switchMode()" checked="checked"> RAM
+              </label>
+              <label class="radio-inline">
+                <input type="radio" name="typeGroup" id="inlineRadio2" value="Flash" onclick="switchMode()" > Flash
+              </label>
+            </div>
+            <br>
             <textarea class="form-control" id="partNumListarea" rows="8"></textarea><br>
             <button type="button" class="btn btn-primary" onclick="decode()">Submit</button>
             
@@ -49,6 +59,8 @@
           </tr>
         </thead>
         <tbody id="myTableBody">
+        </tbody>
+        </table>
     
       <table class="table" id="subTable" style="visibility: hidden">
         <thead>
@@ -62,6 +74,21 @@
         <tbody id="mySubTableBody">
         </tbody>
       </table>
+
+      <table class="table" id="flashTable" style="visibility: hidden">
+        <thead>
+          <tr>
+           
+            <th>Part Number</th>
+            <th>QTY</th>
+         
+          </tr>
+        </thead>
+        <tbody id="mySubTableBody">
+        </tbody>
+      </table>
+
+      <p id="demo"></p>
     </body>
 </html>
 
