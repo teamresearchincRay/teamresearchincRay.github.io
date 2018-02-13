@@ -57,7 +57,7 @@ function decode_Flash(){
 		var x ="";
 		var exist = true;
 		for (var j in hynix_data){
-   			if(partNumber == hynix_data[j].PRODUCT){
+   			if(partNumber.includes(hynix_data[j].PRODUCT)){
    				exist = true;
    				console.log( hynix_data[j].TYPE);
    				type = hynix_data[j].TYPE;
