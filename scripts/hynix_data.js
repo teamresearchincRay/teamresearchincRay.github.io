@@ -1129,8 +1129,10 @@ function switchMode(){
          
       if(typeGroup[i].value == "Flash"){
          document.getElementById("mainTable").style.visibility="hidden";
+         document.getElementById("flashTable").style.visibility="visible";
       }else{
          document.getElementById("mainTable").style.visibility="visible";
+         document.getElementById("flashTable").style.visibility="hidden";
       }
    }
    }
