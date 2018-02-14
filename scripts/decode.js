@@ -206,8 +206,8 @@ function decode_RAM (){
 			if(ECC == "ECC"){
 				moduleType = "ECC "+moduleType;
 			}
-
-			height = density / width;
+			density = density * package;
+			height = (density / width);
 
 			console.log("height " + height);
 			if(height >=1 ){
@@ -215,18 +215,18 @@ function decode_RAM (){
 			}else{
 			ICConfig = height*1024 + "M*"+width;
 			}
-			rank = depth/height;
+			rank = (depth/(height/package))*package;
 			console.log("rank " + rank);
 			if(ECC == "ECC"){
-				ICQTY = (64/width*rank)/package+ ((rank*8)/width);
+				ICQTY = (64/width*rank)/package+ ((rank/package*8)/width);
 			}else{
 				ICQTY = (64/width*rank)/package;
 			}
 			console.log("ICQTY" + ICQTY);
 			if(ECC =="ECC"){
-				totalCapacity = (ICQTY-((rank*8)/width))*density/8;
+				totalCapacity = ((ICQTY-((rank/package*8)/width))*density/package/8);
 			}else{
-				totalCapacity = ICQTY*density/8;
+				totalCapacity = (ICQTY*density/package/8);
 			}
 			if (package == 2 ){
 
@@ -273,7 +273,7 @@ function decode_RAM (){
 
 
 			//get_module_type(partNumber[6]);
-
+			density = density*package;
 			height = density / width;
 			console.log("height " + height);
 			if(height >=1 ){
