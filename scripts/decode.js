@@ -184,6 +184,7 @@ function decode_RAM (){
 		//==================================================Module============================
 		if(type == "Module"){
 			get_density_module(partNumber[3]);
+			console.log("density" + density);
 			if(partNumber[2] == "T"){//DDR3
 				voltage="N/A";
 				modeGrp="DDR3";
@@ -207,6 +208,7 @@ function decode_RAM (){
 				moduleType = "ECC "+moduleType;
 			}
 			density = density * package;
+			console.log("density" + density);
 			height = (density / width);
 
 			console.log("height " + height);
