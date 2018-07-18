@@ -207,7 +207,7 @@ function decode_RAM (){
 			if(ECC == "ECC"){
 				moduleType = "ECC "+moduleType;
 			}
-			density = density * package;
+			//density = density * package;
 			console.log("density" + density);
 			height = (density / width);
 
@@ -217,18 +217,27 @@ function decode_RAM (){
 			}else{
 			ICConfig = height*1024 + "M*"+width;
 			}
-			rank = (depth/(height/package))*package;
-			console.log("rank " + rank);
+
+			var tempRank = depth/height;
+
+			//rank = (depth/(height/package))*package;
+			console.log("tempRank" + tempRank);
+			//console.log("rank " + rank);
 			if(ECC == "ECC"){
-				ICQTY = (64/width*rank)/package+ ((rank/package*8)/width);
+				//ICQTY = (64/width*rank)/package+ ((rank/package*8)/width);
+				ICQTY = (72/width*tempRank);
 			}else{
-				ICQTY = (64/width*rank)/package;
+				ICQTY = (64/width*tempRank);
 			}
+
 			console.log("ICQTY" + ICQTY);
 			if(ECC =="ECC"){
-				totalCapacity = ((ICQTY-((rank/package*8)/width))*density/package/8);
+				//totalCapacity = ((ICQTY-((rank/package*8)/width))*density/package/8);
+				totalCapacity = (density/8)*(64/width)*tempRank;
+
 			}else{
-				totalCapacity = (ICQTY*density/package/8);
+				//totalCapacity = (ICQTY*density/package/8);
+				totalCapacity = (density/8)*(64/width)*tempRank;
 			}
 			if (package == 2 ){
 
@@ -236,6 +245,8 @@ function decode_RAM (){
 			}else if (package == 4){
 				ICQTY = ICQTY + " QDP";
 			}
+
+			rank = tempRank*package;
 			$("#myTableBody").append('<tr><td>'+(i+1)+'</td><td>'
 			+modeGrp+'</td><td>'
 			+line[0]+'</td><td>'
@@ -275,7 +286,7 @@ function decode_RAM (){
 
 
 			//get_module_type(partNumber[6]);
-			density = density*package;
+			density = density* package;
 			height = density / width;
 			console.log("height " + height);
 			if(height >=1 ){
@@ -562,9 +573,9 @@ function checkECC(e){
 function check_package(p){
 	if(p == "F" || p == "J"){
 		package = 1;
-	}else if (p == "M" ||p == "P" ||p=="L"){
+	}else if (p == "M" ||p == "P" ||p=="L" || p == 2){
 		package =2;
-	}else if (p == "H" ){
+	}else if (p == "H" || p == 4){
 		package =4;
 	}else {
 		package ="Unkown";
