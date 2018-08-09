@@ -204,6 +204,7 @@ function decode_RAM (){
 			get_module_type(partNumber[6]);
 			checkECC(partNumber[7]);
 			check_package(partNumber[9]);
+			console.log("package is "+ package);
 			if(ECC == "ECC"){
 				moduleType = "ECC "+moduleType;
 			}
@@ -265,6 +266,7 @@ function decode_RAM (){
 		} else if (type == "IC"){//======================IC==================
 			//get Density.
 			get_density_IC(partNumber[4],partNumber[5]);
+			console.log("density is" + density);
 			//check voltage
 			get_voltage(partNumber[3]);
 			//check depth
@@ -286,7 +288,7 @@ function decode_RAM (){
 
 
 			//get_module_type(partNumber[6]);
-			density = density* package;
+			density = density;
 			height = density / width;
 			console.log("height " + height);
 			if(height >=1 ){
@@ -504,7 +506,7 @@ function get_speedDDR3(s1,s2){
 			}
 
 			
-			console.log("speed is " +s1 + s1 + speed);
+			console.log("speed is " +s1 + s2 + speed);
 }
 function get_speedDDR4(s1,s2){
 	//check speed DDR4
